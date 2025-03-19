@@ -6,7 +6,6 @@ import java.util.List;
 public class DBService {
     private final Connection CONNECTION;
 
-
     public DBService() throws SQLException {
         String url = "jdbc:h2:mem:";
         String user = "admin";
@@ -15,16 +14,20 @@ public class DBService {
     }
 
     public void createJobTable() throws SQLException {
-        String jobTableQuery = "CREATE TABLE job " +
-                "(id INTEGER PRIMARY KEY AUTO_INCREMENT, name TEXT)";
+        String jobTableQuery = """
+                CREATE TABLE job
+                (id INTEGER PRIMARY KEY AUTO_INCREMENT, name TEXT)
+                """;
 
         executeCreateStatement(jobTableQuery);
     }
 
     public void createEmployeeTable() throws SQLException {
-        String employeeTableQuery = "CREATE TABLE employee " +
-                "(id INTEGER PRIMARY KEY AUTO_INCREMENT, name TEXT, job_id INTEGER, " +
-                "CONSTRAINT FK_JOB_ID FOREIGN KEY (job_id) REFERENCES job(id))";
+        String employeeTableQuery = """
+                CREATE TABLE employee
+                (id INTEGER PRIMARY KEY AUTO_INCREMENT, name TEXT, job_id INTEGER,
+                CONSTRAINT FK_JOB_ID FOREIGN KEY (job_id) REFERENCES job(id))
+                """;
         executeCreateStatement(employeeTableQuery);
     }
 
@@ -68,8 +71,10 @@ public class DBService {
     }
 
     public List<String> getEmployeeData() throws SQLException {
-        String query = "SELECT * FROM employee " +
-                "JOIN job ON employee.job_id = job.id";
+        String query = """
+                SELECT * FROM employee
+                JOIN job ON employee.job_id = job.id
+                """;
         try(Statement st = CONNECTION.createStatement()) {
             st.execute(query);
 
@@ -86,9 +91,11 @@ public class DBService {
     }
 
     public boolean updateJob(String name, int id) throws SQLException {
-        String query = "UPDATE job " +
-                "SET name = ? " +
-                "WHERE id = ?";
+        String query = """
+                UPDATE job
+                SET name = ?
+                WHERE id = ?
+                """;
         try(PreparedStatement ps = CONNECTION.prepareStatement(query)) {
             ps.setString(1, name);
             ps.setInt(2, id);
@@ -97,9 +104,11 @@ public class DBService {
     }
 
     public boolean updateEmployee(String name, int id) throws SQLException {
-        String query = "UPDATE employee " +
-                "SET name = ? " +
-                "WHERE id = ?";
+        String query = """
+                UPDATE employee
+                SET name = ?
+                WHERE id = ?
+                """;
         try(PreparedStatement ps = CONNECTION.prepareStatement(query)) {
             ps.setString(1, name);
             ps.setInt(2, id);
@@ -108,8 +117,10 @@ public class DBService {
     }
 
     public boolean deleteJob(int id) throws SQLException {
-        String query = "DELETE FROM job " +
-                "WHERE id = ?";
+        String query = """
+                DELETE FROM job
+                WHERE id = ?
+                """;
         try(PreparedStatement ps = CONNECTION.prepareStatement(query)) {
             ps.setInt(1, id);
             return ps.execute();
@@ -117,12 +128,13 @@ public class DBService {
     }
 
     public boolean deleteEmployee(int id) throws SQLException {
-        String query = "DELETE FROM employee " +
-                "WHERE id = ?";
+        String query = """
+                DELETE FROM employee
+                WHERE id = ?
+                """;
         try(PreparedStatement ps = CONNECTION.prepareStatement(query)) {
             ps.setInt(1, id);
             return ps.execute();
         }
     }
-
 }
